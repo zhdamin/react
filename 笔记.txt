@@ -1,0 +1,577 @@
+在React中，有一个命名规范，通常会将代表事件的监听prop命名为on[Event],将处理事件的监听方法命名为handle[Event]这样的格式。
+
+.slice()方法创建了squares数组的一个副本。
+
+两种改变数据的方式。
+第一种方式是直接修改变量的值；
+    var player = {score:1,name:'jeff'}
+    player.score=2;
+
+第二种方式是使用新的一份数据替换旧数据。
+    var player = {score:1,name:'jeff'};
+    var newPlayer = Object.assign({},player,{score:2});
+
+xIsNext(布尔值)都会反转，该值将确定下一步该轮到哪一个玩家，并且保存游戏状态。
+
+
+
+
+***************API***************
+
+React是React库的入口。
+    通过使用<script>标签的方式加载React,则可以通过React全局变量对象来获得React的顶层API。
+    当使用ES6与npm时，可以通过编写import React from 'react'来引入他们。
+    当使用ES5与npm时，则可以通过编写var React = require('react')来引入他们。
+
+
+
+》》React.Component或React.PureComponent来定义React组件。
+
+React.Component和React.PureComponent的区别在于React.Component并未实现shouldComponentUpdate(),而React.PureComponent中以浅层对比prop和state的方式来实现该函数。
+
+    class Greeting extends React.component {
+        render(){
+            return <h1>Hello,{this.props.name}</h1>;
+        }
+    }
+注意：
+    React.PureComponent中的shouldComponentUpdate()仅作对象的浅层比较。若有复杂的数据结构，则可能无法检查深层的差别，产生错误。
+    在深层数据结构发生变化时调用forceUpdate()来确保组件被正确地更新。也可以考虑immutable对象加速嵌套数据的比较。
+
+    class ShoppingList extends React.Component{
+        render(){
+            return(
+                <div className="shopping-list">
+                    <h1>Shopping List for {this.props.name}</h1>
+                    <ul>
+                        <li>instagram</li>
+                        <li>whatsApp</li>
+                        <li>oculus</li>
+                    </ul>
+                </div>
+            );
+        }
+    }
+
+    return React.createElement('div',{className:'shopping-list'},
+        React.createElement('h1',/*h1 children*/),
+        React.createElement('ul',/*ul children*/)
+    )
+
+    ShoppingList是一个React组件类，组件类型
+    一个组件接受一些参数，这些参数叫做props，通过render方法返回需要展示在屏幕上的视图的层次结构。
+    render方法返回值描述了希望在屏幕上看到的内容。render返回一个render元素，这是对渲染内容的轻量级描述。
+
+
+》》React组件也可以被定义为可被包装的函数：React.memo（只适用于函数）
+
+    const MyComponent = React.memo(
+        function MyComponent(props)
+        {
+            /*使用props渲染*/
+        }
+    )
+
+React.memo仅检查props变更。如果函数被React.memo包裹，且其实现中拥有useState或useContext的Hook，当context发生变化时，它仍会重新渲染。
+
+一般默认只会对复杂对象做浅层对比，若想控制对比过程，则将自定义的函数通过第二个参数传入。
+
+    function MyComponent(props)
+    {
+        /*使用props渲染*/
+    }
+    function areEqual(prevProps,neatProps)
+    {
+        /*如果把nextProps传入render方法的返回结果与将prevProps传入的render方法的返回结果一致则返回true，否则返回false*/
+    }
+    export default React.memo(MyComponent,areEqual);
+
+
+
+
+
+》》使用JSX，调用React.createElement()的语法糖。不需调用createElement(),createFactory()
+
+    React.createElement(
+        type,
+        [props],
+        [...Children]
+    )
+
+
+
+
+《转换元素》
+
+React提供了几个用于操作元素的API：cloneElment（），isValidElement（），React.Children
+   
+    cloneElment（）
+
+        React.cloneElment(
+            element,
+            [props],
+            [...Children]
+        )
+
+以element元素为样板克隆并返回新的React元素。返回元素的props是将新的props与原始的props浅层合并的结果。新的子元素将取代现有的子元素，而来自原始的key和ref将被保留。
+
+React.cloneElment几乎等同于
+    <element.type {...element.props}{...props}>{children}</element.type>
+
+这也保留了组件的ref。意味着当通过ref获取子节点时，从祖先节点上窃取它。相同的ref将添加到克隆后的新元素中。
+
+    createFactory()  【已废】
+
+        React.createFactory(type)
+
+    返回用于生成指定类型React元素的函数。
+
+
+
+    
+    isValidElement（）
+
+        React.isValidElement(object)
+    
+    验证对象是否为React元素，返回值为true或false。
+
+
+
+
+
+    React.Children
+
+        React.Children提供了用于处理this.props.children不透明数据结构的使用方法。
+
+
+
+
+    React.Children.map 
+
+        React.Children.map(children,function[(thisArg)])
+
+注意：如果children是一个Fragment对象，它将被视为单一子节点的情况处理，而不会被遍历。
+
+
+
+
+    React.Children.forEach
+
+        React.Children.forEach(children,function[(thisArg)])
+    
+    与React.Children.map()类似，但它不会返回一个数组。
+
+
+
+    React.Children.count
+
+        React.Children.count(children)
+
+    返回children中的组件总数量，等同于通过map或forEach调用回调函数的次数。
+
+
+    React.Children.only
+
+        React.Children.only(children)
+
+    验证children是否只有一个子节点（一个react元素），如果有则返回它，否则此方法会抛出错误。
+    注意：React.Children.only（）不接受React.Children.map（）的返回值。
+
+
+
+
+
+    React.Children.toArray
+
+        React.Children.toArray(children)
+
+    将children这个复杂的数据结构以数组的方式扁平展开并返回，并为每个子节点分配一个key。
+
+
+
+
+
+《Fragments》
+
+React提供了用于减少不必要嵌套的组件：
+    React.Fragment
+
+        React.Fragment组件能够再不额外创建DOM元素的情况下，让render（）方法中返回多个元素。
+
+        render(){
+            return (
+                <React.Fragment>
+                    Some.text.
+                    <h2>a heading</h2>
+                </React.Fragment>
+            );
+        }
+
+
+
+
+
+《Refs》
+
+    React.createRef
+
+        创建一个能够通过ref属性附加到React元素的ref。
+
+        class MyComponent extends React.Component{
+            constructor(props){
+                super(props);
+
+                this.inputRef = React.createRef;
+            }
+
+            render(){
+                return <input type="text" ref={this.input}/>;
+            }
+
+            componentDidMount(){
+                this.inputRef.current.focus();
+            }
+        }
+
+
+
+    React.forwardRef
+
+        创建一个React组件，这个组件能够将其接受的ref属性转发到其组件树下的另一个组件中。
+        1、转发refs到DOM组件；2、再高阶组件中转发refs
+
+        const FancyButton = React.forwardRef((props,ref) => (
+        <button ref={ref} className="FancyButton>
+            {props.children}
+        </button>
+        ));
+
+        const ref = React.createRef();
+        <FancyButton ref={ref}>Click me!</FancyButton>
+
+
+
+
+《Suspense》
+
+Suspense使得组件可以“等待”某些操作结束后，再进行渲染。支持的场景是：通过React.lazy动态加载组件。
+    React.lazy
+
+        允许定义一个动态加载的组件。
+
+        const SomeComponent = React。lazy(() =>
+        import('./SomeComponent'));
+
+
+
+
+    React.Suspense
+
+        React.Suspense可以指定加载指示器，以防其组件树中的某些子组件尚未具备渲染条件。
+
+        const OtherComponent = React.lazy(() =>
+        import('./OtherComponent'));
+
+        function MyComponent(){
+            return(
+                //显示<Spinner>组件直至OtherComponent加载完成
+                <React.Suspense fallback={<Spinner />}>
+                    <div>
+                        <OtherComponent />
+                    </div>
+                </React.Suspense>
+            );
+        }
+
+《Hook》
+
+Hook是React16.8的新增特性。可以在不编写class的情况下使用state以及其他的React特性。
+
+基础Hook
+    useState
+    useEffect
+    useContext
+额外的Hook
+    useReducer
+    useCallback
+    useMemo
+    useRef
+    useImperativeHandle
+    useLayoutEffect
+    useDebugValue
+
+
+
+
+
+    *************************React**********************
+
+    React是一个声明式，高效且灵活的用于构建用户界面的JavaScript库。使用React可以将一些简短、独立的代码片段组合成复杂的UI界面，这些代码片段被称作“组件”。
+    React用于在前端构建用户界面
+    React是MVC应用程序的视图层（模型视图控制器）
+
+
+    ********************在网站中添加React***************
+
+    1、添加一个DOM容器到html（添加一个空的div标签作为显示内容的容器）
+    2、添加引用script
+    3、创建一个Reack组件（同级目录下创建一个.js文件）
+
+
+    *******************React基本文件****************
+
+    编写React的第一个代码块。创建一个Reack组件APP
+
+        class App extends React.Component{}
+    
+    添加render（）方法，这是类组件中唯一需要的方法，用于呈现DOM节点
+
+        class App extends React.component{
+            render(){
+                return(
+                    //...
+                );
+            }
+        }
+
+    在return中，放置HTML元素的内容。此处不返回字符串，不能使用引号，这成为JSX。
+
+        class App extends React.Component{
+            render(){
+                return <h1>Hello world</h1>
+            }
+        }
+
+    使用React DOM render()方法将App渲染到root中
+
+        ReactDOM.render(<App />,document.getElementById('root'))
+
+
+
+    **********************引用react************************
+
+    <script src="https://unpkg.com/react@16/umd/react.development.js"></script>
+    <script src="https://unpkg.com/react-dom@16/umd/react-dom.development.js"></script>
+        
+
+    ****************************JSX*************************
+
+    const element = <h1>Hello,world!</h1>
+    它被称为JSX。
+
+    JSX是一个JavaScript的语法扩展
+
+
+    ***********************创建React应用********************
+
+    搭建环境： 
+        npx create-react-app <目录名称>
+
+    进入目录并启用项目
+        cd <目录名称>
+        npm start
+
+
+    
+
+    ***********************构造函数********************
+
+    在JavaScript class中，每次定义其子类的构造函数时，都需要调用super方法。因此，在所有含有构造函数的React组件中，构造函数必须以   super(props)   开头。
+
+
+
+
+    ***********************状态提升********************
+
+    当你遇到需要同时获取多个子组件数据，或者两个组件之间需要相互通讯的情况时，需要把子组件的state数据提升至其共同的父组件当中保存。之后父组件可以通过props将状态数据传递到子组件当中。这样应用当中所有组件的状态数据就能够更方便的同步共享了。
+
+
+
+
+
+
+    *************************组件**********************
+    
+组件名称必须是大写字母开头
+
+
+两种表达方式
+
+    函数组件：
+
+    function MyFunction(props){
+        return <h1> hello,{props.name} </h1>
+    }
+
+    class组件：
+
+    class MyFunction extends React.Component{
+        render(){
+            <h1> hello,{this.props.name} </h1>
+        }
+    }
+
+
+    当React元素为用户自定义组件时，它将会jsx所接受的属性以及子组件转换为单个对象传递给组件，这个对象称之为“props”
+
+
+
+    组件组合
+
+    可以在其输出中引用其他组件
+
+        function Welcome(){
+            return <h1> hello,{props.name} </h1>
+        }
+
+        function App(props){
+            return(
+                <div>
+                    <Welcome name="aaa"/>
+                    <Welcome name="bbb"/>
+                </div>
+            )
+        }
+
+
+
+        对于字符串，使用双引号；对于表达式，使用大括号。
+
+
+        元素是构成React应用的最小砖块。
+
+
+        <div id="root"></div>
+        我们将其称为“根”DOM节点，因为该节点内的所有内容都将由React DOM管理。
+        仅使用React构建的应用通常只有单一的根DOM节点。如果你在将React集成进一个已有的应用，那么可以在应用中包含任意多的独立根DOM节点。
+        想要将一个React元素渲染到根DOM节点中，只需把它们一起传入ReactDOM.render().
+
+
+    ***********************state和生命周期********************
+
+
+    componentDidMount()
+    componentWillMount()
+    这些方法叫做“生命周期方法”
+    componentDidMount()方法会在组件已经被渲染到DOM中后运行。
+
+
+    正确使用State
+
+    1~不能直接修改State
+        此代码不会重新渲染组件
+            this.state.comment = "Hello" 
+        而是应该使用setState（）
+            this.setState({comment:'Hello'})
+
+    构造函数是唯一可以给this.state赋值的地方
+
+    2~State的更新可能是异步的
+        React可能会把多个setState（）调用合并成一个调用
+
+        this.props和this.state可能会异步更新
+
+        此代码可能无法更新计数器
+            this.setState({
+                counter:this.state.counter + this.props.increment
+            })
+        解决这个问题，可以让setState()接受一个函数而不是一个对象。用上一个state作为第一个参数，将此次更新被应用时的props作为第二个参数
+
+            this.setState((state,props) => ({
+                counter:state.counter + props.increment
+            }))
+        或
+            this.setState(function(state,props){
+                return{
+                    counter:state.counter + props.increment
+                }
+            })
+
+    
+    3~State的更新会被合并
+
+        当你调用SetState（）的时候，React会把你提供的对象合并到当前的state。
+
+
+    数据是向下流动的，被称为自上而下或是单向数据流。
+
+
+***********************事件处理********************
+
+React事件的命名采用小驼峰式，而不是纯小写
+使用JSX语法时需要传入一个函数作为事件处理函数，而不是一个字符串。
+
+
+HTML事件
+
+    <button onClick="activateLasers()">
+        Actiate Lasers
+    </button>
+
+React事件
+
+    <button onClick={activateLasers}>
+        Actiate Lasers
+    </button>
+
+
+    在React中另一个不同点时不能通过返回flase的方式阻止默认行为。必须显式的使用preventDefault.
+
+HTML阻止
+    <a href="#" onClick="console.log('the link was clicked'); return false">
+        Click me
+    </a>
+
+React阻止
+    function ActionLink(){
+        function handleClick(e){
+            e.preventDefault();
+            console.log('the link was clicked');
+        }
+    }
+    return(
+        <a href="#" onClick={handleClick}>Click me</a>
+    )
+
+
+
+    像事件处理函数传递参数
+
+    两种方式：
+        <button onClick={(e) => this.delectRow(id,e)}>delect row</button>
+        <button onClick={this.delectRow.bind(this,id)}>delect row</button>
+
+
+***********************条件渲染********************
+
+在React中，可以创建不同的组件来封装各种需要的行为，然后，一句应用的不同状态，可以只渲染对应状态下的部分内容。
+
+
+
+将Commponent作为React的属性加载，因此我们不再需要extend React.Commponent
+
+
+一个类组件必须包括 render（），并且return这只能返回一个父元素
+比较：
+    类组件
+        import React,{Component} from 'react'
+        class ClassComponent extends Component{
+            render(){
+                return(
+                    <div>Example</div>
+                )
+            }
+
+    简单组件
+        import React,{Component} from 'react'
+        const SimpleComponent = () => {
+            return  <div>Example</div>
+        }
+
+
+
+React通过props和状态来处理数据
+
+传递JavaScript表达式，使用花括号括起来
+
+传递的变量是characters，此时数据在虚拟DOM中，没有在DOM中。可以通过使用访问所有道具this.props。因此，此时用this.props.characters来检索该数据。
