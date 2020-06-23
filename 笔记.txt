@@ -546,6 +546,8 @@ React阻止
 
 在React中，可以创建不同的组件来封装各种需要的行为，然后，一句应用的不同状态，可以只渲染对应状态下的部分内容。
 
+使用JSX的写法，可以创建JS元素对象
+注意：JSX元素对象，或者组件对象，必须只有1个根元素（根节点）
 
 
 将Commponent作为React的属性加载，因此我们不再需要extend React.Commponent
@@ -592,3 +594,67 @@ filter创建新的数组，并且是在JavaScript中修改数组的首选方法�
 
 event.preventDefault()
     组织默认的点击事件执行；在编辑域中阻止按键
+
+
+
+**********************特点**********************
+1.声明式的设计
+2.高效。采用虚拟DOM来实现DOM的渲染，最大限度的减少DOM的操作。
+3.灵活。跟其他库灵活搭配使用。
+4.JSX，俗称JS里面写HTML，JavaScript语法的扩展
+5.组件化，模块化，代码容易复用。
+6.单项数据流，没有实现数据的双向绑定。数据=》视图=》事件=》数据
+
+
+
+***通过react的脚手架，创建项目进行开发，部署。
+
+    1.安装脚手架Create React App。
+     npm install -g create-react-app
+    2.创建项目
+     create-react-app 项目名称
+     
+
+**robots.txt   告诉爬虫可不可以爬，或者爬什么
+
+
+**.gitignore  告诉你将要忽视的内容
+
+
+**package-lock.json   原生目录依赖什么内容
+
+
+** Manifest.json  是移动APP的配置文件，用于指定应用的显示名称、图标、应用入口文件地址及需要使用的设备权限等信息。是扩展的配置文件，指明了扩展的各种信息。
+
+
+**serviceWorker.unregister()   若有内容需要缓存，则就会帮忙缓存起来。
+
+****Git
+
+git config --list 查看自己用户信息
+git config --global user.email "邮箱地址"
+git config --global user.name "姓名"
+
+如果账号密码有变动，用git config --system --unset credential.helper重新输入账号密码，如不能解决，则使用git config --global http.emptyAuth true
+查看全部分支：git branch -a
+查看当前分支：git branch
+创建自己的分支：git branch 分支名
+切换到新的分支：git checkout 分支名
+同步到github线上：git push -u origin 分支名
+进行add追踪以及commit提交：git add . ;git commit -m "描述"
+切换上一级的分支：git checkout -
+切换到某一分支：git branch 分支名
+在某个分支(非主分支)下创建新的分支：git checkoutc -b 新的分支 
+
+
+**JSX
+优点：
+1.JSX执行更快，编译为JavaScript代码时进行优化
+2.类型更安全，编译过程如果出错就不能编译，及时发现错误。
+3.JSX编写模板更加简单快速。
+
+注意：
+1、JSX必须要有根节点。
+2、正常的普通HTML元素要小写，如果是大写，默认认为是组件。
+
+JSX内部表达式
