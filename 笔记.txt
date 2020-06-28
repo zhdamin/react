@@ -657,4 +657,247 @@ git config --global user.name "姓名"
 1、JSX必须要有根节点。
 2、正常的普通HTML元素要小写，如果是大写，默认认为是组件。
 
-JSX内部表达式
+JSX表达式
+1、由HTML元素构成
+2、中间如果需要插入变量用{}
+3、{}中间可以使用表达式
+4、{}中间表达式中可以使用JSX对象
+5、属性和html内容一样都是用来{}来插入内容
+
+
+**JSX style样式
+1.class中，不可以存在多个class属性。
+应该这样写：
+    const classStr2 = ['abc2','redBg2'].join(' ')
+        const element3 = (
+            <div>
+                {/**这里写注释 */}
+                <h1 className={classStr2}>hello world</h1>
+            </div>
+        )
+2.style样式中，如果存在多个单词的属性组合，第二个单词开始，首字母大写，或者用引号引起来，负责会报错。
+
+3.多个类共存的操作
+    const classStr = "redBg"
+    const element2 = (
+    <div>
+        <h1 className={"abc "+classStr}>hello world</h1>
+    </div>
+    )
+
+    const classStr2 = ['abc2','redBg2'].join(' ')
+    const element3 = (
+    <div>
+        {/**这里写注释 */}
+        <h1 className={classStr2} style={exampleStyle}>hello world</h1>
+    </div>
+    )
+
+4.注释：必须在大括号里面写
+ {/**/}
+
+
+**React
+函数式组件与类组件的区别和使用。函数式比较简单，一般用于静态没有交互事件内容的组件页面。类组件一般又称为动态组件，一般会有交互或者数据修改的操作。
+1.函数式组件
+    //函数式组件
+function Childer(props){
+  console.log(props)
+
+
+  const title = <h2>副标题</h2>
+
+  const weather = props.weather
+  //条件判断
+  const isGo = weather == '下雨'?"不出门":"出门"
+
+  return(
+    <div>
+      <h1>函数式组件hello world</h1>
+      {title}
+      <div>
+        是否出门？
+        <span>{isGo}</span>
+      </div>
+    </div>
+  )
+}
+2.类组件
+//类组件
+class Helloworld extends React.Component{
+  render(){
+    console.log(this)
+    return(
+      <div>
+        <h1>类组件Hello World</h1>
+        <h1>hello {this.props.name}</h1>
+        <Childer weather={this.props.weather} />
+      </div>
+    )
+  }
+}
+
+// ReactDOM.render(
+//   <Childer weather='不下雨'/>,
+//   document.getElementById("root")
+// )
+
+ReactDOM.render(
+  <Helloworld name = '老陈' weather='下雨' />,
+  document.getElementById("root")
+)
+3.组件中又有其他的组件中称为复合组件。既可以有函数组件，又可以有类组件。
+ import React from 'react';
+import ReactDOM from 'react-dom';
+import './App.css'
+
+//函数式组件
+function Childer(props){
+  console.log(props)
+
+
+  const title = <h2>副标题</h2>
+
+  const weather = props.weather
+  //条件判断
+  const isGo = weather == '下雨'?"不出门":"出门"
+
+  return(
+    <div>
+      <h1>函数式组件hello world</h1>
+      {title}
+      <div>
+        是否出门？
+        <span>{isGo}</span>
+      </div>
+    </div>
+  )
+}
+
+
+
+//类组件
+class Helloworld extends React.Component{
+  render(){
+    console.log(this)
+    return(
+      <div>
+        <h1>类组件Hello World</h1>
+        <h1>hello {this.props.name}</h1>
+        <Childer weather={this.props.weather} />
+      </div>
+    )
+  }
+}
+
+// ReactDOM.render(
+//   <Childer weather='不下雨'/>,
+//   document.getElementById("root")
+// )
+
+ReactDOM.render(
+  <Helloworld name = '老陈' weather='下雨' />,
+  document.getElementById("root")
+)
+
+
+**props
+父传递给子组件数据，单向流动，不能子传递给父。
+props传值可以是任意的类型。
+
+props可以设置默认值
+HelloMessage.defaultProps = {name:"哈哈",msg:"Helloworld"}
+
+注意：props可以传递函数，props可以传递父元素的函数，就可以去修改父元素的state，从而达到传递数据给父元素。
+
+
+子传父
+    调用父元素的函数从而操作父元素的数据，实现数据从子元素传递至父元素
+
+
+**Hook
+    setState函数用于更新state。
+
+    const [state,setState] = userState(initialState)
+    useState返回一个state，以及更新state的函数。在初始渲染期间，返回的状态（state）与传入的第一个参数（initialState）值相同。
+
+
+**Form.useForm
+    Form.useForm对表单数据域进行交互，userForm是React Hooks的实现，只能用于函数组件。类组件下，可以通过ref获取数据域。
+
+
+**React条件渲染
+    React中条件渲染JavaScript中，条件运算，如if...else...，三元运算符。
+    1~直接通过条件运算返回要渲染的JSX对象
+    2~通过条件运算得出JSX对象，再将JSX对象渲染到模板中。
+
+
+**列表渲染
+    将列表内容拼装成数组放置到模板中。
+    将数据拼装成数组的JSX对象。
+    使用数组的map方法，对每一项数据按照JSX的形式进行加工，最终的到一个每一项都是JSX对象的数组，再将数组渲染到模板中。
+    Key值需要放置到每一项中。
+
+forEach对数组直接进行循环，相当于直接for循环，没有返回值。
+map（）对数组每一项进行加工，加工完成之后返回一个新的数组。
+filter过滤，就是将想要的内容进行筛选，不要内容去除，最终返回想要的内容。
+for...in...主要用于遍历对象，不适用于遍历数组
+for...of...（没有索引值index）可以用来遍历数组，类数组的对象，字符串，set/map，generator
+
+
+
+**react生命周期
+生命周期既是组件从实例化到渲染到最终从页面中销毁，整个过程就是生命周期，在这个生命周期中，我们有许多调用的函数，也俗称钩子函数。
+
+生命周期的3个状态：
+Mounting：将组件插入到DOM中
+Updating：将数据更新到DOM中
+Unmounting：将组件移除DOM中
+
+生命周期中的钩子函数（方法，事件）
+1.组件将要挂在时触发的函数：componentWillMount (AJAX，添加动画前的类)
+2.组件挂在完成时出发的函数：componentDidMount (添加动画)
+3.是否要更新数据时触发的函数：shouldComponentUpdate(返回布尔值)
+4.将要更新数据时触发的函数：componentWillUpdate
+5.数据更新完成时触发的函数：componentDidUpdate
+6.组件将要销毁时触发的函数：componentWillUnmount(移除前的准备工作，比如保存数据等)
+7.父组件中改变了props传值时触发的函数：componentWillReceineProps (查看接受props的数据是什么)
+
+
+**项目列表
+    config：配置
+    docker：是一个开源的应用容器引擎，让开发者可以打包他们的应用以及依赖包到一个可移植的镜像中，然后发布到任何流行的Linux或者Windows机器上，也可以实现虚拟化。容器是完全使用沙箱机制，相互之间不会有任何接口。
+    mock：模拟动态接口；按照既定的接口和数据结构的要求（接口文档），自己模拟后端接口的功能，让前端项目能顺利跑起来。
+    node-modules：是安装node后用来存放依赖包的文件夹
+    public：公共资源文件
+    src：项目源码
+        assets：资产
+        components：组件
+        e2e：（端到端）指任意一个人的社交、交易、休闲都可以直接与另外任意一个人产生关系，去中心化、渠道化。（也属于黑盒测试）
+        layouts：布局
+        locales：语言环境
+        models：模型
+        pages：分页
+        services：公共服务系统
+        utils：工具类，实用工具
+        global.jsx:全球的，总体的
+        global.less:
+        manifest.json:扩展的配置文件，指明了扩展的的各种信息
+        service-worker:介于客户端和服务器之间的一个代理服务器
+    tests：单元测试
+    .editorconfig:有助于为跨域各种编辑器和IDE的同一项目的多个开发人员维护一致的编码样式。
+    .eslintignore：忽略来自供应商库的警告。
+    .eslintrc：配置ESlint；代码文件内配置的规则会覆盖配置文件里的规则。
+    .gitignore：告诉你将要忽视的内容
+    .prettierignore:文件忽略设置项。
+    .prettierrc.js：代码格式化配置
+    .stylelintrc.js：兼容多种格式的css代码规范工具
+    Dockerfile：是一个用来构建镜像的文本文件，文本内容包含了一条条构建镜像所需的指令和说明。
+    jest.config.js：单元测试相关配置
+    jsconfig.json:是JavaScript项目的根目录。jsconfig.json文件指定根文件和JavaScript语言服务提供的功能选项
+    package.json：定义这个项目所需的各种模块，以及项目的配置信息。
+    package-lock.json：是在`npm install`时候生成一份文件，用来记录当前状态下实际安装的各个npm package的具体来源和版本号。锁定安装时的版本号，需要上传到git，保证大家的依赖包一致。
+
+
+
+
