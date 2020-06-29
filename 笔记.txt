@@ -644,7 +644,8 @@ git config --global user.name "姓名"
 进行add追踪以及commit提交：git add . ;git commit -m "描述"
 切换上一级的分支：git checkout -
 切换到某一分支：git branch 分支名
-在某个分支(非主分支)下创建新的分支：git checkoutc -b 新的分支 
+在某个分支(非主分支)下创建新的分支：git checkout -b 新的分支 
+删除本地分支：git branch -d 分支名
 
 
 **JSX
@@ -898,6 +899,18 @@ Unmounting：将组件移除DOM中
     package.json：定义这个项目所需的各种模块，以及项目的配置信息。
     package-lock.json：是在`npm install`时候生成一份文件，用来记录当前状态下实际安装的各个npm package的具体来源和版本号。锁定安装时的版本号，需要上传到git，保证大家的依赖包一致。
 
+**React插槽
+组件中写入内容，这些内容可以被识别和控制。
+原理：组件中写入的HTML，可以传入到props中。
 
+组件中根据html内容的不同，插入的位置不同
 
+**React路由
+根据不同的路径，显示不同的内容。React使用的库react-router-dom
 
+ReactRouter三大组件：
+Router：所有路由组件的根组件（底层组件），包裹路由规则的最外层容器
+Route：路由规则匹配组件，显示当前规则对应的组件
+Link：路由跳转组件
+
+注意：如果要精确匹配，那么可以在route上设置exact属性
